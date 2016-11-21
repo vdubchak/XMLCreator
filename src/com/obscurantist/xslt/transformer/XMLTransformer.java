@@ -2,6 +2,7 @@ package com.obscurantist.xslt.transformer;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,6 +124,14 @@ public class XMLTransformer {
 		for(Entry<String, String> namespace : namespaces.entrySet()) {
 			root.setAttribute(namespace.getKey(), namespace.getValue());
 		}
+	}
+	
+	public Document transform(List<String> emptyMappings, Map <String, String> namespaces) throws Exception {
+		HashMap<String, String> finalMappings = new HashMap<>();
+		for(String key : emptyMappings) {
+			finalMappings.put(key, "");
+		}
+		return transform(finalMappings, namespaces);
 	}
 	
 	public Document transform(Map<String, String> finalMappings, Map <String, String> namespaces) throws Exception {
@@ -265,7 +273,7 @@ public class XMLTransformer {
 
 	private String getElementValue(String xPath, Document document) throws Exception {
 		String value = "";
-		if(StringUtils.isNotBlank(xPath)) {
+		if((xPath != null) && (!xPath.isEmpty())) {
 			String formatedXPath = formatXPath(xPath); 
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			XPathExpression expression = xpath.compile(formatedXPath);
